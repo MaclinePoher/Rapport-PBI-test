@@ -1,0 +1,172 @@
+table Clients
+	excludeFromModelRefresh
+	lineageTag: 288f03c4-4c44-4398-9bb5-9cf030b4e319
+
+	column 'Id Client'
+		dataType: int64
+		formatString: 0
+		lineageTag: 142002ed-c9f6-453a-a5d9-c98bddebe074
+		summarizeBy: none
+		sourceColumn: Id Client
+
+		annotation SummarizationSetBy = Automatic
+
+	column Client
+		dataType: string
+		lineageTag: 49f47393-9d4c-40ea-8e09-04bc7defde36
+		summarizeBy: none
+		sourceColumn: Client
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Adresse rue'
+		dataType: string
+		isHidden
+		lineageTag: a23989a4-01e6-4ec9-b32d-727aff2e6754
+		summarizeBy: none
+		sourceColumn: Adresse rue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Code Postal'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 85e5f6d7-bc3b-472b-a502-ae5a335b3ebd
+		summarizeBy: none
+		sourceColumn: Code Postal
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ville
+		dataType: string
+		lineageTag: f3465b1f-13ad-4b50-8c7a-ede511e4dd7d
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Ville
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'N° de téléphone'
+		dataType: string
+		isHidden
+		lineageTag: 0d83a99c-f8de-4e08-911d-425250509944
+		summarizeBy: none
+		sourceColumn: N° de téléphone
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Adresse complète'
+		dataType: string
+		isHidden
+		lineageTag: 88f232a6-c27c-4c12-a2b5-a44ea82cd868
+		summarizeBy: none
+		sourceColumn: Adresse complète
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Représentant
+		dataType: string
+		lineageTag: f70f4d4c-9585-4978-a1dc-72bfa9b06fe9
+		summarizeBy: none
+		sourceColumn: Représentant
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Indicatif région'
+		dataType: string
+		isHidden
+		lineageTag: 46024f1e-9300-4d8c-a9b3-bd9e20ff036d
+		summarizeBy: none
+		sourceColumn: Indicatif région
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Région
+		dataType: string
+		lineageTag: 38aa6df2-0633-4aa4-8262-67b869391624
+		dataCategory: County
+		summarizeBy: none
+		sourceColumn: Région
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Territoire =
+			
+			SWITCH(
+			    Clients[Indicatif région],
+			    "01", "RP",
+			    "02", "Nord-Ouest",
+			    "03", "Nord-Est",
+			    "04", "Sud-Est",
+			    "05", "Sud-Ouest",
+			    "N/C"
+			)
+		lineageTag: 99814437-634f-4a3e-933d-6f3163fb56ad
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	hierarchy 'Région Ville'
+		lineageTag: b42646fe-e332-4561-9a84-6509d86e8a14
+
+		level Région
+			lineageTag: 5e4a4577-5fd0-4a51-afbb-047433d525e0
+			column: Région
+
+		level Ville
+			lineageTag: aa97283e-2637-4dde-b9e2-c4112b92cc47
+			column: Ville
+
+	partition Clients-24ad3771-db8b-4f55-8f85-faaa07a67376 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\cekou\OneDrive\Bureau\Jeux de données\Clients.xlsx"), null, true),
+				    Données_Client_Table = Source{[Item="Données_Client",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Données_Client_Table,{{"Id Client", Int64.Type}, {"Client", type text}, {"Adresse rue", type text}, {"Code Postal", Int64.Type}, {"Ville", type text}, {"N° de téléphone", type text}, {"Titre", type text}, {"Prénom", type text}, {"Nom", type text}}),
+				    #"Colonne fusionnée insérée" = Table.AddColumn(#"Type modifié", "Adresse complète", each Text.Combine({[Adresse rue], Text.From([Code Postal], "fr-FR"), [Ville]}, " "), type text),
+				    #"Personnalisée ajoutée" = Table.AddColumn(#"Colonne fusionnée insérée", "Représentant", each [Titre]&" "&[Prénom]&" "&[Nom]),
+				    #"Type modifié1" = Table.TransformColumnTypes(#"Personnalisée ajoutée",{{"Représentant", type text}}),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié1",{"Titre", "Prénom", "Nom"}),
+				    #"Premiers caractères insérés" = Table.AddColumn(#"Colonnes supprimées", "Premiers caractères", each Text.Start([#"N° de téléphone"], 2), type text),
+				    #"Colonnes renommées" = Table.RenameColumns(#"Premiers caractères insérés",{{"Premiers caractères", "Indicatif région"}}),
+				    #"Majuscule à chaque mot" = Table.TransformColumns(#"Colonnes renommées",{{"Ville", Text.Proper, type text}}),
+				    #"Requêtes fusionnées" = Table.NestedJoin(#"Majuscule à chaque mot", {"Ville"}, Régions, {"Ville"}, "Régions", JoinKind.LeftOuter),
+				    #"Régions développé" = Table.ExpandTableColumn(#"Requêtes fusionnées", "Régions", {"Région"}, {"Région"}),
+				    #"Colonnes permutées" = Table.ReorderColumns(#"Régions développé",{"Id Client", "Client", "Adresse rue", "Code Postal", "Ville", "Région", "N° de téléphone", "Adresse complète", "Représentant", "Indicatif région"})
+				in
+				    #"Colonnes permutées"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

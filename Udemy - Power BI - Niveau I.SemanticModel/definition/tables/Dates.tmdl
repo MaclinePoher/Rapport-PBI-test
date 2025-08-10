@@ -1,0 +1,155 @@
+table Dates
+	excludeFromModelRefresh
+	lineageTag: fd610547-8101-4e69-8726-98bea0bf05b5
+
+	column Date
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 44907c24-829a-4dd0-9fa7-555573d1592a
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 2911108b-df9e-46e3-8228-a53509cb262f
+			defaultHierarchy: LocalDateTable_d670d7f4-72ba-4292-a455-8e05dd64917e.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Année
+		dataType: int64
+		formatString: 0
+		lineageTag: 9f4c0e2e-dc24-4c22-8c9e-037a72119fc6
+		summarizeBy: sum
+		sourceColumn: Année
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mois
+		dataType: int64
+		formatString: 0
+		lineageTag: 833a8834-8ef9-4817-9c3c-3415d4359803
+		summarizeBy: sum
+		sourceColumn: Mois
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nom du mois'
+		dataType: string
+		lineageTag: f2b42c2e-7840-4168-aefa-f9d0b65db69f
+		summarizeBy: none
+		sourceColumn: Nom du mois
+		sortByColumn: Mois
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Fin du mois'
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 3d60f0c8-a3fe-4484-a519-01ad332d95df
+		summarizeBy: none
+		sourceColumn: Fin du mois
+
+		variation Variation
+			isDefault
+			relationship: ba0a5f8c-2736-4818-a54c-b3665a967422
+			defaultHierarchy: LocalDateTable_79b03389-6195-41aa-b5cf-a5193ea06699.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Trimestre
+		dataType: int64
+		formatString: 0
+		lineageTag: 67ed40b9-eaa6-44dd-9f3b-7d3b73bbaaf0
+		summarizeBy: sum
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Jour
+		dataType: int64
+		formatString: 0
+		lineageTag: 614661e1-6c53-4886-b990-20c2e9c6d8e2
+		summarizeBy: sum
+		sourceColumn: Jour
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nom du jour'
+		dataType: string
+		lineageTag: 1e0c5056-0b4b-4eb9-9120-8a0641b63be8
+		summarizeBy: none
+		sourceColumn: Nom du jour
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Trimestre CC' = "T" & QUARTER( Dates[Date] )
+		lineageTag: c8fa0fb3-c496-4984-be6d-e93f61b99719
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Mois CC' = MONTH( Dates[Date] )
+		formatString: 0
+		lineageTag: 93f4a57e-7d61-423b-bfbb-f5f98880f526
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weekend O/N' = ```
+			
+			IF(
+			    OR( WEEKDAY( Dates[Date], 2 ) = 6, WEEKDAY( Dates[Date], 2 ) = 7 ),
+			    "Oui",
+			    "Non"
+			)
+			
+			```
+		lineageTag: 7c00b581-6f17-456b-ae78-a685064ea2a3
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	partition Dates-19ee29ff-9238-4e7e-b35b-33a968579cb8 = m
+		mode: import
+		source =
+				let
+				    Source = #date(2017, 1, 1),
+				    DateDébut = Source,
+				    DateFin = #date(2019, 12, 31),
+				    NbdeJrs = Duration.Days( DateFin - DateDébut),
+				    Dates = List.Dates(DateDébut, NbdeJrs+1, #duration(1,0,0,0)),
+				    #"Converti en table" = Table.FromList(Dates, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Colonnes renommées" = Table.RenameColumns(#"Converti en table",{{"Column1", "Date"}}),
+				    #"Type modifié" = Table.TransformColumnTypes(#"Colonnes renommées",{{"Date", type date}}),
+				    #"Année insérée" = Table.AddColumn(#"Type modifié", "Année", each Date.Year([Date]), Int64.Type),
+				    #"Mois inséré" = Table.AddColumn(#"Année insérée", "Mois", each Date.Month([Date]), Int64.Type),
+				    #"Nom du mois inséré" = Table.AddColumn(#"Mois inséré", "Nom du mois", each Date.MonthName([Date]), type text),
+				    #"Trimestre inséré" = Table.AddColumn(#"Nom du mois inséré", "Trimestre", each Date.QuarterOfYear([Date]), Int64.Type),
+				    #"Jour inséré" = Table.AddColumn(#"Trimestre inséré", "Jour", each Date.Day([Date]), Int64.Type),
+				    #"Nom du jour inséré" = Table.AddColumn(#"Jour inséré", "Nom du jour", each Date.DayOfWeekName([Date]), type text),
+				    #"Fin de mois insérée" = Table.AddColumn(#"Nom du jour inséré", "Fin du mois", each Date.EndOfMonth([Date]), type date),
+				    #"Colonnes permutées" = Table.ReorderColumns(#"Fin de mois insérée",{"Date", "Année", "Mois", "Nom du mois", "Fin du mois", "Trimestre", "Jour", "Nom du jour"})
+				in
+				    #"Colonnes permutées"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

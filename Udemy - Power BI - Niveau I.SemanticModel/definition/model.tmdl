@@ -1,0 +1,42 @@
+model Model
+	culture: fr-FR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: fr-FR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup 'Transformer le fichier à partir de Ventes'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'Transformer le fichier à partir de Ventes\Requêtes d''assistance'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'Requêtes intermédiaires'
+
+	annotation PBI_QueryGroupOrder = 1
+
+annotation PBI_QueryOrder = ["Produits","Clients","Régions","Ventes","Paramètre1","Transformer l'exemple de fichier","Exemple de fichier","Transformer le fichier","Dates","Mesures de base","Démo CALCULATE","Time Intelligence"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.142.928.0 (25.04)+de52df9f0bb74ad93a80d89c52d63fe6d07e0e1b
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Produits
+ref table DateTableTemplate_c2bd8370-eeda-4bf0-8128-0217ce89a777
+ref table Clients
+ref table Ventes
+ref table Dates
+ref table LocalDateTable_d670d7f4-72ba-4292-a455-8e05dd64917e
+ref table LocalDateTable_79b03389-6195-41aa-b5cf-a5193ea06699
+ref table 'Mesures de base'
+ref table 'ALL démo'
+ref table 'Démo CALCULATE'
+ref table 'Time Intelligence'
+
+ref cultureInfo fr-FR
+

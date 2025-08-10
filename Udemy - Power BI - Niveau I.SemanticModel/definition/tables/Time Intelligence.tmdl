@@ -1,0 +1,82 @@
+table 'Time Intelligence'
+	lineageTag: 10ee9f3f-0fc9-4f8a-9cf6-6c5df45cf8f4
+
+	measure 'CA N-1' = CALCULATE( [Chiffre d'affaires], DATEADD( Dates[Date], -1, YEAR ) )
+		formatString: "€"\ #,0.00;-"€"\ #,0.00;"€"\ #,0.00
+		lineageTag: 811fe46e-9f4f-4682-908b-9cf7efc12d12
+
+	measure 'Ecart CA' = [Chiffre d'affaires] - [CA N-1]
+		lineageTag: 34b44d4c-9e72-4455-9e38-ea3c61612e28
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CA T-1' = CALCULATE( [Chiffre d'affaires], DATEADD( Dates[Date], -1, QUARTER ) )
+		lineageTag: 46eaf9f1-d4ca-4d1f-bc40-dcdc48259b12
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Ecart CA Trim' = [Chiffre d'affaires] - [CA T-1]
+		lineageTag: 4f25dabb-2f9f-48bb-8eee-76ea470bd1bc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Var Trim' = DIVIDE( [Ecart CA Trim], [CA T-1], 0 )
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: 2a75f546-2272-4fd0-b3a8-6df8f2325ade
+
+	measure 'CA cumulé' = CALCULATE( [Chiffre d'affaires], DATESYTD( Dates[Date] ) )
+		formatString: "€"\ #,0.00;-"€"\ #,0.00;"€"\ #,0.00
+		lineageTag: 8c333fb4-d43c-4579-94d7-0f75ad647d43
+
+	measure 'CA Cumulé Trim' = CALCULATE( [Chiffre d'affaires], DATESQTD( Dates[Date] ) )
+		lineageTag: 5da84c84-826a-44a9-b781-220a487c19ab
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CA cumulé Mens' = CALCULATE( [Chiffre d'affaires], DATESMTD( Dates[Date] ) )
+		lineageTag: c5136d60-ac35-41f9-bd76-e8e60863c796
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CA cumulé N-1' = CALCULATE( [CA N-1], DATESYTD( Dates[Date] ) )
+		lineageTag: ecf46f98-9c58-480b-b9b0-e83d26427f8a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Ecart cumulé' = [CA cumulé] - [CA cumulé N-1]
+		lineageTag: cde54150-0b85-4d0b-b472-ee8fa6dc5a65
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CA cumulé T-1' = CALCULATE( [CA T-1], DATESQTD( Dates[Date] ) )
+		lineageTag: c4690f53-f191-47f7-bfd4-72c54caf5d75
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Ecart Trim cumulé' = [CA Cumulé Trim] - [CA cumulé T-1]
+		lineageTag: 298b1276-9894-4a7b-844e-4fe52e971f2a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'MM -7 jrs' =
+			
+			AVERAGEX(
+			    DATESINPERIOD( Dates[Date], MAX( Dates[Date] ), -7, DAY ),
+			    [Chiffre d'affaires]
+			)
+		lineageTag: e9b84252-ba93-421c-a181-3e1942876508
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Time Intelligence-4aca9f26-fb5f-4021-b2a7-265b5155e329' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type text) meta [Serialized.Text = true]) in type table [#"Colonne 1" = _t]),
+				    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Colonne 1", type text}}),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié",{"Colonne 1"})
+				in
+				    #"Colonnes supprimées"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,29 @@
+table 'ALL démo'
+	lineageTag: 740e2832-faa5-4a08-a454-f6da2e372d8f
+
+	column Canal
+		lineageTag: b092081e-f02d-4f41-b9c1-2de92e255ff3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Ventes[Canal]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Volume
+		lineageTag: dfd1ea62-3a67-4703-a778-efd8fe9cdbef
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Ventes[Volume]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	partition 'ALL démo-0aefce88-a177-4e0b-8c1b-d31141ffbb89' = calculated
+		mode: import
+		source = ALL( Ventes[Canal], Ventes[Volume] )
+
+	annotation PBI_Id = d610f7e89d5941918f071f03e21b95f7
+

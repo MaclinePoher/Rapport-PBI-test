@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.7.0/schema.json",
+  "name": "71776f05e7f7aa90f012",
+  "position": {
+    "x": 89.6969696969697,
+    "y": 10.90909090909091,
+    "z": 8000,
+    "height": 54.545454545454547,
+    "width": 367.27272727272731,
+    "tabOrder": 8000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "PERFORMANCE France",
+                    "textStyle": {
+                      "fontFamily": "Arial Black",
+                      "fontSize": "20pt"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

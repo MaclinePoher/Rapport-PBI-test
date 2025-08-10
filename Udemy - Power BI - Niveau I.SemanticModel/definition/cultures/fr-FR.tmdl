@@ -1,0 +1,53 @@
+cultureInfo fr-FR
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "mesures_de_base.chiffre_daffaires": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Mesures de base",
+			          "ConceptualProperty": "Chiffre d'affaires"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "CA Période": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mesures_de_base.délai_moyen_de_livraison": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Mesures de base",
+			          "ConceptualProperty": "Délai Moyen de Livraison"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Délai Livraison": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

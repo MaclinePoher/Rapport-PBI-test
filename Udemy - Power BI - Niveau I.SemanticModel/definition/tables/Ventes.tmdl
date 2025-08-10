@@ -1,0 +1,127 @@
+table Ventes
+	lineageTag: e105817e-4f7a-4986-9fb1-c386cbf9467d
+
+	column 'N° de Commande'
+		dataType: string
+		lineageTag: 7d3f8195-30f9-40ed-8f23-884f34ad7d43
+		summarizeBy: none
+		sourceColumn: N° de Commande
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Date de Commande'
+		dataType: dateTime
+		isHidden
+		formatString: dd/mm/yyyy
+		lineageTag: 759f2157-a1f9-46cb-bf9f-47afeee91815
+		summarizeBy: none
+		sourceColumn: Date de Commande
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Date de Livraison'
+		dataType: dateTime
+		isHidden
+		formatString: dd/mm/yyyy
+		lineageTag: d4727aad-5041-470e-88db-a673b9f90c3c
+		summarizeBy: none
+		sourceColumn: Date de Livraison
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Id Client'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 58ff9d56-338c-4318-8356-c6770b8b9a62
+		summarizeBy: none
+		sourceColumn: Id Client
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Canal
+		dataType: string
+		lineageTag: 3c8715e4-bfa5-4886-9ba3-5e9472422ea0
+		summarizeBy: none
+		sourceColumn: Canal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Id Produit'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 338129af-ac23-4e0a-bd35-13ad30317c60
+		summarizeBy: none
+		sourceColumn: Id Produit
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantité
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: d07b2e2d-9dca-48bd-848e-f5c5cce23ad2
+		summarizeBy: sum
+		sourceColumn: Quantité
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Volume
+		dataType: string
+		lineageTag: be7ad2dd-5043-4a44-8d26-14e7ed1c0130
+		summarizeBy: none
+		sourceColumn: Volume
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Délai de livraison' = DATEDIFF( Ventes[Date de Commande], Ventes[Date de Livraison], DAY )
+		formatString: 0
+		lineageTag: 26adf6fc-14fc-4b69-911d-b35ef46e6c01
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Ventes-bb2421db-6f4a-4247-a4b0-cd5d19bb6fa8 = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\cekou\OneDrive\Bureau\Jeux de données\Ventes"),
+				    #"Fichiers masqués filtrés1" = Table.SelectRows(Source, each [Attributes]?[Hidden]? <> true),
+				    #"Appeler une fonction personnalisée1" = Table.AddColumn(#"Fichiers masqués filtrés1", "Transformer le fichier", each #"Transformer le fichier"([Content])),
+				    #"Colonnes renommées1" = Table.RenameColumns(#"Appeler une fonction personnalisée1", {"Name", "Source.Name"}),
+				    #"Autres colonnes supprimées1" = Table.SelectColumns(#"Colonnes renommées1", {"Source.Name", "Transformer le fichier"}),
+				    #"Colonne de tables développée1" = Table.ExpandTableColumn(#"Autres colonnes supprimées1", "Transformer le fichier", Table.ColumnNames(#"Transformer le fichier"(#"Exemple de fichier"))),
+				    #"Type modifié" = Table.TransformColumnTypes(#"Colonne de tables développée1",{{"Source.Name", type text}, {"N° de Commande", type text}, {"Date de Commande", type date}, {"Date de Livraison", type date}, {"Id Client", Int64.Type}, {"Canal", type text}, {"Id Produit", Int64.Type}, {"Quantité", Int64.Type}}),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié",{"Source.Name"}),
+				    #"Colonne conditionnelle ajoutée" = Table.AddColumn(#"Colonnes supprimées", "Volume", each if [Quantité] <= 6 then "Bas" else if [Quantité] <= 9 then "Moyen" else if [Quantité] >= 10 then "Élevé" else null),
+				    #"Type modifié1" = Table.TransformColumnTypes(#"Colonne conditionnelle ajoutée",{{"Volume", type text}})
+				in
+				    #"Type modifié1"
+
+	annotation PBI_ResultType = Table
+

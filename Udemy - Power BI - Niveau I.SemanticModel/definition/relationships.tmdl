@@ -1,0 +1,27 @@
+relationship 2911108b-df9e-46e3-8228-a53509cb262f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Dates.Date
+	toColumn: LocalDateTable_d670d7f4-72ba-4292-a455-8e05dd64917e.Date
+
+relationship ba0a5f8c-2736-4818-a54c-b3665a967422
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Dates.'Fin du mois'
+	toColumn: LocalDateTable_79b03389-6195-41aa-b5cf-a5193ea06699.Date
+
+relationship 016ba832-6a6b-4bd9-ba0e-9ab652fe3c4a
+	fromColumn: Ventes.'Id Produit'
+	toColumn: Produits.Index
+
+relationship 80db04a2-50c9-4d25-9917-1a01f4453ebd
+	fromColumn: Ventes.'Date de Commande'
+	toColumn: Dates.Date
+
+relationship b69cfd0d-1ce5-4cb3-981f-6e1d638a0220
+	isActive: false
+	fromColumn: Ventes.'Date de Livraison'
+	toColumn: Dates.Date
+
+relationship d2d0263a-8349-40e1-b560-8bcf625f347b
+	fromColumn: Ventes.'Id Client'
+	toColumn: Clients.'Id Client'
+

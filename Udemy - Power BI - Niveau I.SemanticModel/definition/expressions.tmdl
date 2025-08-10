@@ -1,0 +1,62 @@
+expression Paramètre1 = #"Exemple de fichier" meta [IsParameterQuery=true, BinaryIdentifier=#"Exemple de fichier", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: ef1c26f2-a6eb-416b-abc4-b2ea2793b09c
+	queryGroup: 'Transformer le fichier à partir de Ventes\Requêtes d''assistance'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transformer l''exemple de fichier' =
+		let
+		    Source = Excel.Workbook(Paramètre1, null, true),
+		    Feuil1_Sheet = Source{[Item="Feuil1",Kind="Sheet"]}[Data],
+		    #"En-têtes promus" = Table.PromoteHeaders(Feuil1_Sheet, [PromoteAllScalars=true])
+		in
+		    #"En-têtes promus"
+	lineageTag: 4748ad82-5940-485a-8d25-b0579359331c
+	queryGroup: 'Transformer le fichier à partir de Ventes'
+
+	annotation PBI_ResultType = Table
+
+expression 'Exemple de fichier' =
+		let
+		    Source = Folder.Files("C:\Users\cekou\OneDrive\Bureau\Jeux de données\Ventes"),
+		    Navigation1 = Source{0}[Content]
+		in
+		    Navigation1
+	lineageTag: 3f65c49f-45fe-411a-ba64-120de627ccc7
+	queryGroup: 'Transformer le fichier à partir de Ventes\Requêtes d''assistance'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transformer le fichier' =
+		let
+		    Source = (Paramètre1) => let
+		        Source = Excel.Workbook(Paramètre1, null, true),
+		        Feuil1_Sheet = Source{[Item="Feuil1",Kind="Sheet"]}[Data],
+		        #"En-têtes promus" = Table.PromoteHeaders(Feuil1_Sheet, [PromoteAllScalars=true])
+		    in
+		        #"En-têtes promus"
+		in
+		    Source
+	lineageTag: 2907b7af-1463-4174-bb62-417c7c284ec3
+	queryGroup: 'Transformer le fichier à partir de Ventes\Requêtes d''assistance'
+
+	annotation PBI_ResultType = Function
+
+expression Régions =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\cekou\OneDrive\Bureau\Jeux de données\Régions.xlsx"), null, true),
+		    Feuil1_Sheet = Source{[Item="Feuil1",Kind="Sheet"]}[Data],
+		    #"Type modifié" = Table.TransformColumnTypes(Feuil1_Sheet,{{"Column1", type text}, {"Column2", type text}}),
+		    #"En-têtes promus" = Table.PromoteHeaders(#"Type modifié", [PromoteAllScalars=true]),
+		    #"Type modifié1" = Table.TransformColumnTypes(#"En-têtes promus",{{"Région", type text}, {"Ville", type text}}),
+		    #"Lignes vides supprimées" = Table.SelectRows(#"Type modifié1", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+		    #"Majuscule à chaque mot" = Table.TransformColumns(#"Lignes vides supprimées",{{"Région", Text.Proper, type text}, {"Ville", Text.Proper, type text}})
+		in
+		    #"Majuscule à chaque mot"
+	lineageTag: 59ad45a4-3408-4851-8358-65dfc2cee9d2
+	queryGroup: 'Requêtes intermédiaires'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

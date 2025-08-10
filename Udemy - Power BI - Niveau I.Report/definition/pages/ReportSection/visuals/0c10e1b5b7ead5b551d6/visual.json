@@ -1,0 +1,17 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.7.0/schema.json",
+  "name": "0c10e1b5b7ead5b551d6",
+  "position": {
+    "x": 5.9800664451827243,
+    "y": 90.8970099667774,
+    "z": 24000,
+    "height": 629.10299003322257,
+    "width": 191.36212624584718,
+    "tabOrder": 29000
+  },
+  "visualGroup": {
+    "displayName": "Volet Slicer",
+    "groupMode": "ScaleMode"
+  },
+  "isHidden": true
+}

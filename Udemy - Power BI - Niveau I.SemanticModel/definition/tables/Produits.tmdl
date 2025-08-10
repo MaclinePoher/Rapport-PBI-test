@@ -1,0 +1,112 @@
+table Produits
+	excludeFromModelRefresh
+	lineageTag: 896e505e-1ce6-49ae-9500-f0d42e9c5d26
+
+	column Index
+		dataType: int64
+		formatString: 0
+		lineageTag: 411d4008-ca8f-4e60-91bd-26166ed6063c
+		summarizeBy: none
+		sourceColumn: Index
+
+		annotation SummarizationSetBy = Automatic
+
+	column Produit
+		dataType: string
+		lineageTag: 0a05bb38-0b05-473b-b13c-18227003eb53
+		summarizeBy: none
+		sourceColumn: Produit
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Catégorie
+		dataType: string
+		lineageTag: b73cc3ad-c022-4c11-8258-63e5c53f60ae
+		summarizeBy: none
+		sourceColumn: Catégorie
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Sous-Catégorie
+		dataType: string
+		lineageTag: 05119844-c830-48f5-9325-7a824957d01b
+		summarizeBy: none
+		sourceColumn: Sous-Catégorie
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Coût unitaire'
+		dataType: double
+		lineageTag: 12c3e78b-0cf5-4e63-a65d-b1eb09e66aca
+		summarizeBy: none
+		sourceColumn: Coût unitaire
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Prix unitaire'
+		dataType: double
+		lineageTag: a10bbcb8-7b43-43d1-a39c-c4bd57dec388
+		summarizeBy: none
+		sourceColumn: Prix unitaire
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Marge unitaire' = Produits[Prix unitaire] - Produits[Coût unitaire]
+		isHidden
+		lineageTag: 57149e51-8179-4beb-8117-b7000bf53d08
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Valeur ajoutée' = IF( Produits[Marge unitaire] > 830, "Forte VA", "VA Moyenne" )
+		lineageTag: c640d338-0039-492c-8b7a-f302c0a4537b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	hierarchy 'Famille Produit'
+		lineageTag: b71c68e2-c310-4676-839c-45b9f043bc4a
+
+		level Catégorie
+			lineageTag: b07a436b-6e96-4251-8329-1ccb56763768
+			column: Catégorie
+
+		level Sous-Catégorie
+			lineageTag: b07cf393-21ba-4c32-8b4e-befa72f14fe6
+			column: Sous-Catégorie
+
+		level Produit
+			lineageTag: 50480acc-eb56-4d0d-aa4a-6ec7537869ce
+			column: Produit
+
+	partition Produits-f4bc9b62-22b1-430b-ba6e-24a28f5921ec = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\cekou\OneDrive\Bureau\Jeux de données\Produits.xlsx"), null, true),
+				    Données_Produit_Table = Source{[Item="Données_Produit",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Données_Produit_Table,{{"Index", Int64.Type}, {"Nom_Produit", type text}, {"Catégorie", type text}, {"Sous-Catégorie", type text}, {"Coût unitaire", type number}, {"Prix unitaire", type number}}),
+				    #"Colonnes renommées" = Table.RenameColumns(#"Type modifié",{{"Nom_Produit", "Produit"}}),
+				    Arrondi = Table.TransformColumns(#"Colonnes renommées",{{"Coût unitaire", each Number.Round(_, 2), type number}}),
+				    Arrondi1 = Table.TransformColumns(Arrondi,{{"Prix unitaire", each Number.Round(_, 2), type number}})
+				in
+				    Arrondi1
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

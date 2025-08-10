@@ -1,0 +1,113 @@
+table 'Mesures de base'
+	lineageTag: efa9078c-2dfe-40f1-87f8-c6e49045d903
+
+	measure 'Qté Totale' = SUM( Ventes[Quantité] )
+		formatString: #,0
+		lineageTag: b8f01ba0-5e33-49f3-943c-74ff4c414767
+
+	measure 'Qté Moyenne' = AVERAGE( Ventes[Quantité] )
+		lineageTag: eca687f7-0cb9-4544-bf83-6440060676a0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '# Transactions' = ```
+			COUNTROWS( Ventes ) 
+			```
+		formatString: #,0
+		lineageTag: 35fc02ea-d088-438f-b0bf-61b914ca95f4
+
+	measure '# Canaux' = DISTINCTCOUNT( Ventes[Canal] )
+		formatString: 0
+		lineageTag: a0e2df9c-e0be-4d4d-ac71-b701561060cd
+
+	measure 'Qté Min' = MIN( Ventes[Quantité]  )
+		formatString: 0
+		lineageTag: 6fb5675b-8922-4216-86f3-97241aac8d05
+
+	measure 'Qté Max' = MAX( Ventes[Quantité] )
+		formatString: 0
+		lineageTag: 3f107b6c-0530-4e74-82d0-080d9eab7f46
+
+	measure 'Chiffre d''affaires' =
+			
+			SUMX(
+			    Ventes,
+			    Ventes[Quantité] * RELATED( Produits[Prix unitaire] )
+			)
+		formatString: "€"\ #,0.00;-"€"\ #,0.00;"€"\ #,0.00
+		lineageTag: 42a254a3-232d-4a4b-83e1-061e0166ca32
+
+	measure CDV =
+			
+			SUMX(
+			    Ventes,
+			    Ventes[Quantité] * RELATED( Produits[Coût unitaire] )
+			)
+		formatString: "€"\ #,0.00;-"€"\ #,0.00;"€"\ #,0.00
+		lineageTag: 45195a8c-5646-40c7-91f3-6540795aad9c
+
+	measure 'Marge Brute' = [Chiffre d'affaires] - [CDV]
+		formatString: "€"\ #,0.00;-"€"\ #,0.00;"€"\ #,0.00
+		lineageTag: 5a41113e-abd7-43ff-bbbb-541ba91e997a
+
+	measure Moyenne/jr =
+			
+			AVERAGEX(
+			    Dates,
+			    [Chiffre d'affaires]
+			)
+		lineageTag: 6248ebec-8d2e-439f-8dfc-fecee5960d53
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Moyenne/client =
+			
+			AVERAGEX(
+			    Clients,
+			    [Chiffre d'affaires]
+			)
+		lineageTag: 1d50f062-eb40-4a8e-87c8-4f08347ac20c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Marge' = DIVIDE( [Marge Brute], [Chiffre d'affaires], "Non applicable" )
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: cbda69a9-8998-4186-a605-33cea11a4751
+
+	measure 'CA Occitanie' =
+			
+			SUMX(
+			    FILTER(
+			        Clients,
+			        Clients[Région] = "Occitanie"
+			    ),
+			    [Chiffre d'affaires]
+			)
+		lineageTag: 159c62d7-4e18-4bc9-ad20-e531b6d6e4e2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Objectif Transactions' = CALCULATE( [# Transactions], SAMEPERIODLASTYEAR( Dates[Date] ) ) *1.1
+		lineageTag: ea778a4f-08a5-4ccd-80c6-b56990ecc942
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Délai Moyen de Livraison' = AVERAGE( Ventes[Délai de livraison] )
+		lineageTag: 5f5c8226-ba95-4050-bdcc-1b08c0463420
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Mesures de base-4621c71e-e080-41b4-9df7-e14b1cbb0546' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type text) meta [Serialized.Text = true]) in type table [#"Colonne 1" = _t]),
+				    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Colonne 1", type text}}),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié",{"Colonne 1"})
+				in
+				    #"Colonnes supprimées"
+
+	annotation PBI_ResultType = Table
+
+	annotation LinkedQueryName = Mesures de base
+

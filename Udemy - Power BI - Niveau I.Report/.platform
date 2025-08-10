@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Udemy - Power BI - Niveau I"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a32736a4-c3e9-4e20-920b-5bbc2dc396f3"
+  }
+}

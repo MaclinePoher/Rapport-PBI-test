@@ -1,0 +1,118 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 110,
+            "y": 1
+          },
+          "nodeIndex": "Produits",
+          "size": {
+            "height": 213,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 465.6,
+            "y": 0
+          },
+          "nodeIndex": "Clients",
+          "size": {
+            "height": 189,
+            "width": 266
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 515.4,
+            "y": 307
+          },
+          "nodeIndex": "Ventes",
+          "size": {
+            "height": 251,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 842.59999999999991,
+            "y": 0
+          },
+          "nodeIndex": "Dates",
+          "size": {
+            "height": 202,
+            "width": 229
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1108.2,
+            "y": 0
+          },
+          "nodeIndex": "Mesures de base",
+          "size": {
+            "height": 118,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1720.4,
+            "y": 0
+          },
+          "nodeIndex": "ALL démo",
+          "size": {
+            "height": 194,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1991,
+            "y": 0
+          },
+          "nodeIndex": "Démo CALCULATE",
+          "size": {
+            "height": 118,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2261.6,
+            "y": 0
+          },
+          "nodeIndex": "Time Intelligence",
+          "size": {
+            "height": 118,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Toutes les tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Toutes les tables",
+  "defaultDiagram": "Toutes les tables"
+}

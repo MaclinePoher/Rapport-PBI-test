@@ -1,0 +1,127 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.7.0/schema.json",
+  "name": "9850d27f23a49a9d76c2",
+  "position": {
+    "x": 10.764119601328904,
+    "y": 464.05315614617939,
+    "z": 16000,
+    "height": 234.41860465116278,
+    "width": 753.48837209302326
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "N° de Commande"
+                }
+              },
+              "queryRef": "Ventes.N° de Commande"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "Canal"
+                }
+              },
+              "queryRef": "Ventes.Canal"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ventes"
+                    }
+                  },
+                  "Property": "Volume"
+                }
+              },
+              "queryRef": "Ventes.Volume"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mesures de base"
+                    }
+                  },
+                  "Property": "Chiffre d'affaires"
+                }
+              },
+              "queryRef": "Mesures de base.Chiffre d'affaires"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mesures de base"
+                    }
+                  },
+                  "Property": "CDV"
+                }
+              },
+              "queryRef": "Mesures de base.CDV"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mesures de base"
+                    }
+                  },
+                  "Property": "Marge Brute"
+                }
+              },
+              "queryRef": "Mesures de base.Marge Brute"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mesures de base"
+                    }
+                  },
+                  "Property": "% Marge"
+                }
+              },
+              "queryRef": "Mesures de base.% Marge"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mesures de base"
+                    }
+                  },
+                  "Property": "Délai Moyen de Livraison"
+                }
+              },
+              "queryRef": "Mesures de base.Délai Moyen de Livraison"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
