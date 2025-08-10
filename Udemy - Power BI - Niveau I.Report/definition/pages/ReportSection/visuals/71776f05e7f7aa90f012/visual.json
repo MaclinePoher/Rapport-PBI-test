@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.7.0/schema.json",
   "name": "71776f05e7f7aa90f012",
   "position": {
-    "x": 89.6969696969697,
-    "y": 10.90909090909091,
+    "x": 89.1139240506329,
+    "y": 10.126582278481012,
     "z": 8000,
-    "height": 54.545454545454547,
-    "width": 367.27272727272731,
+    "height": 42.531645569620252,
+    "width": 550.88607594936707,
     "tabOrder": 8000
   },
   "visual": {
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "PERFORMANCE France",
+                    "value": "PERFORMANCE France - GLOBAL",
                     "textStyle": {
                       "fontFamily": "Arial Black",
                       "fontSize": "20pt"
